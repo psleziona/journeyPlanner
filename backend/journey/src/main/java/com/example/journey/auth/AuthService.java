@@ -25,8 +25,6 @@ import java.util.List;
 public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ReactiveUserDetailsService userDetailsService;
-    private final UserService userService;
     private final TokenProvider tokenProvider;
 
     public Mono<User> getCurrentUser() {
