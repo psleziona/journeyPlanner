@@ -61,6 +61,7 @@ public class AuthService {
     }
 
     public Mono<User> register(User user) {
+        user.setTrips(new ArrayList<>());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setTrips(new ArrayList<>());
         return userRepository.save(user);

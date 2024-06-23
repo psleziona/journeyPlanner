@@ -1,5 +1,7 @@
 create table trip_comments(
-    trip_id BIGINT NOT NULL ,
+    id_trip BIGINT NOT NULL ,
+    id_user bigint not null ,
     comment varchar(255),
-    FOREIGN KEY (trip_id) REFERENCES trips(id) ON DELETE CASCADE
+    FOREIGN KEY (id_trip) REFERENCES trips(id) ON DELETE CASCADE,
+    foreign key (id_user) references users(id) on delete cascade
 )

@@ -1,8 +1,10 @@
 package com.example.journey.service;
 
-import com.example.journey.model.Trip;
-import com.example.journey.repository.TripRepository;
+import com.example.journey.auth.AuthService;
+import com.example.journey.model.*;
+import com.example.journey.repository.*;
 import lombok.AllArgsConstructor;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -11,9 +13,38 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class TripService {
     private final TripRepository tripRepository;
+    private final AuthService authService;
+    private final DayScheduleRepository dayScheduleRepository;
+    private final TripImageRepository tripImageRepository;
+    private final UserTripRepository userTripRepository;
+    private final TripCommentRepository tripCommentRepository;
+    private final UserRepository userRepository;
 
     public Mono<Trip> findById(Long id) {
-        return tripRepository.findById(id);
+        return tripRepository.findById(id)
+                .flatMap(trip ->
+                        Flux.merge(
+                                dayScheduleRepository.findAllByIdTrip(id).collectList().map(daySchedules -> {
+                                    trip.setSchedules(daySchedules);
+                                    return "";
+                                }),
+                                tripImageRepository.findAllByIdTrip(id).collectList().map(tripImages -> {
+                                    trip.setImages(tripImages.stream().map(TripImage::getFilename).toList());
+                                    return "";
+                                }),
+                                userTripRepository.findAllByIdTrip(id)
+                                        .flatMap(userTrip -> userRepository.findById(userTrip.getIdUser()))
+                                        .collectList()
+                                        .map(users -> {
+                                            trip.setUsers(users);
+                                            return "";
+                                        }),
+                                tripCommentRepository.findAllByIdTrip(id).collectList().map(tripComments -> {
+                                    trip.setComments(tripComments.stream().map(TripComment::getComment).toList());
+                                    return "";
+                                })
+                        ).then(Mono.just(trip))
+                );
     }
 
     public Flux<Trip> findAll() {
@@ -21,7 +52,28 @@ public class TripService {
     }
 
     public Mono<Trip> save(Trip trip) {
-        return tripRepository.save(trip);
+        return authService.getCurrentUser()
+                .flatMap(user -> {
+                    trip.setIdOwner(user.getId());
+                    return tripRepository.save(trip);
+                });
+    }
+
+    public Mono<Void> addUserToTrip(Long idTrip, Long idUser) {
+        return Mono.zip(tripRepository.findById(idTrip), userRepository.findById(idUser))
+                .flatMap(tuple -> {
+                    Trip trip = tuple.getT1();
+                    User user = tuple.getT2();
+
+                    UserTrip userTrip = new UserTrip(user.getId(), trip.getId());
+
+                    return userTripRepository.save(userTrip)
+                            .then(Mono.empty());
+                });
+    }
+
+    public Mono<Void> deleteUserFromTrip(Long idTrip, Long idUser) {
+        return userTripRepository.deleteByIdTripAndIdUser(idTrip, idUser);
     }
 
     public Mono<Void> deleteById(Long id) {

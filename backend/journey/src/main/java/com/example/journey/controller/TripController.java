@@ -28,6 +28,16 @@ public class TripController {
         return tripService.save(trip);
     }
 
+    @PostMapping("/user/add/{idTrip}/{idUser}")
+    public Mono<Void> addUserToTrip(@PathVariable Long idTrip, @PathVariable Long idUser) {
+        return tripService.addUserToTrip(idTrip, idUser);
+    }
+
+    @DeleteMapping("/user/delete/{idTrip}/{idUser}")
+    public Mono<Void> deleteUserFromTrip(@PathVariable Long idTrip, @PathVariable Long idUser) {
+        return tripService.deleteUserFromTrip(idTrip, idUser);
+    }
+
     @DeleteMapping("/{id}")
     public Mono<Void> deleteTrip(@PathVariable Long id) {
         return tripService.deleteById(id);

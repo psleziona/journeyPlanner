@@ -16,6 +16,7 @@ public class Trip {
     private String name;
     private LocalDate start;
     private LocalDate finish;
+    private Long idOwner;
     @Transient
     private List<String> images;
     @Transient

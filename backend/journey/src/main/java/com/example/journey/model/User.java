@@ -15,7 +15,6 @@ public class User {
     @Id
     private Long id;
     private String username;
-    @JsonIgnore
     private String password;
     @Transient
     private List<Trip> trips;

@@ -23,11 +23,6 @@ public class UserController {
         return userService.findAll();
     }
 
-    @PostMapping
-    public Mono<User> createUser(@RequestBody User user) {
-        return userService.save(user);
-    }
-
     @DeleteMapping("/{id}")
     public Mono<Void> deleteUser(@PathVariable Long id) {
         return userService.deleteById(id);
