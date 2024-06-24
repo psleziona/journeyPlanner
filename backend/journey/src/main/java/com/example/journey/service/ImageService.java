@@ -1,6 +1,11 @@
 package com.example.journey.service;
 
+import com.example.journey.auth.AuthService;
+import com.example.journey.model.TripImage;
+import com.example.journey.repository.TripImageRepository;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -18,8 +23,12 @@ import java.nio.file.Paths;
 public class ImageService {
 
     private static final Path IMAGE_DIRECTORY = Paths.get("images");
+    private final AuthService authService;
+    private final TripImageRepository tripImageRepository;
 
-    public ImageService() {
+    public ImageService(AuthService authService, TripImageRepository tripImageRepository) {
+        this.authService = authService;
+        this.tripImageRepository = tripImageRepository;
         try {
             Files.createDirectories(IMAGE_DIRECTORY);
         } catch (IOException e) {
@@ -27,7 +36,8 @@ public class ImageService {
         }
     }
 
-    public Mono<String> saveImage(FilePart file) {
+    public Mono<String> saveImage(FilePart file, String idTrip) {
+        Long id = Long.parseLong(idTrip);
         String extension = getFileExtension(file.filename());
         String fileName = generateFileName(extension);
         Path path = Paths.get(IMAGE_DIRECTORY.toString(), fileName);
@@ -36,10 +46,15 @@ public class ImageService {
                 .then(Mono.defer(() -> {
                     try {
                         Files.createDirectories(path.getParent());
-                        return Mono.just(fileName);
                     } catch (IOException e) {
                         return Mono.error(e);
                     }
+                    return authService.getCurrentUser()
+                            .flatMap(user -> {
+                                TripImage tripImage = new TripImage(id, user.getId(), fileName);
+                                return tripImageRepository.save(tripImage);
+                            })
+                            .thenReturn(fileName);
                 }));
     }
 

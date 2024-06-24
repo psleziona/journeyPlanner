@@ -27,7 +27,11 @@ public class DayScheduleService {
     }
 
     public Mono<DaySchedule> findById(Long id) {
-        return dayScheduleRepository.findById(id);
+        return dayScheduleRepository.findById(id)
+                .flatMap(daySchedule -> dayScheduleTaskRepository.findAllByIdDaySchedule(id).collectList().map(dayScheduleTasks -> {
+                    daySchedule.setTasks(dayScheduleTasks.stream().map(DayScheduleTask::getTask).toList());
+                    return daySchedule;
+                }));
     }
 
     public Mono<DaySchedule> save(DaySchedule daySchedule) {
@@ -39,7 +43,11 @@ public class DayScheduleService {
     }
 
     public Mono<DayScheduleTask> addTaskToSchedule(DayScheduleTask dayScheduleTask) {
-        return dayScheduleTaskRepository.save(dayScheduleTask);
+        return authService.getCurrentUser()
+                .flatMap(user -> {
+                    dayScheduleTask.setIdUser(user.getId());
+                    return dayScheduleTaskRepository.save(dayScheduleTask);
+                });
     }
 
 }

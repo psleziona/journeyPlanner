@@ -26,22 +26,22 @@ public class TripService {
                         Flux.merge(
                                 dayScheduleRepository.findAllByIdTrip(id).collectList().map(daySchedules -> {
                                     trip.setSchedules(daySchedules);
-                                    return "";
+                                    return daySchedules;
                                 }),
                                 tripImageRepository.findAllByIdTrip(id).collectList().map(tripImages -> {
                                     trip.setImages(tripImages.stream().map(TripImage::getFilename).toList());
-                                    return "";
+                                    return tripImages;
                                 }),
                                 userTripRepository.findAllByIdTrip(id)
                                         .flatMap(userTrip -> userRepository.findById(userTrip.getIdUser()))
                                         .collectList()
                                         .map(users -> {
                                             trip.setUsers(users);
-                                            return "";
+                                            return users;
                                         }),
                                 tripCommentRepository.findAllByIdTrip(id).collectList().map(tripComments -> {
                                     trip.setComments(tripComments.stream().map(TripComment::getComment).toList());
-                                    return "";
+                                    return tripComments;
                                 })
                         ).then(Mono.just(trip))
                 );
@@ -78,5 +78,13 @@ public class TripService {
 
     public Mono<Void> deleteById(Long id) {
         return tripRepository.deleteById(id);
+    }
+
+    public Mono<TripComment> addComment(TripComment tripComment) {
+        return authService.getCurrentUser()
+                .flatMap(user -> {
+                    tripComment.setIdUser(user.getId());
+                    return tripCommentRepository.save(tripComment);
+                });
     }
 }

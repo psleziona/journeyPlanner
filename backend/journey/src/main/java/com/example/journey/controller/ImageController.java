@@ -19,8 +19,8 @@ public class ImageController {
 
     @PostMapping("/upload")
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<String> uploadImage(@RequestPart("file") FilePart file) throws IOException {
-        return imageService.saveImage(file);
+    public Mono<String> uploadImage(@RequestPart("file") FilePart file, @RequestPart("idTrip") String idTrip) throws IOException {
+        return imageService.saveImage(file, idTrip);
     }
 
     @GetMapping("/{filename}")

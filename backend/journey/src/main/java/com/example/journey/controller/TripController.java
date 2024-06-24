@@ -1,6 +1,7 @@
 package com.example.journey.controller;
 
 import com.example.journey.model.Trip;
+import com.example.journey.model.TripComment;
 import com.example.journey.service.TripService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -41,5 +42,10 @@ public class TripController {
     @DeleteMapping("/{id}")
     public Mono<Void> deleteTrip(@PathVariable Long id) {
         return tripService.deleteById(id);
+    }
+
+    @PostMapping("/comments/add")
+    public Mono<TripComment> addCommentToTrip(@RequestBody TripComment tripComment) {
+        return tripService.addComment(tripComment);
     }
 }
