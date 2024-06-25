@@ -11,6 +11,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/trips")
 @AllArgsConstructor
+@CrossOrigin
 public class TripController {
     private final TripService tripService;
 

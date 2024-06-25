@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/schedules")
 @AllArgsConstructor
+@CrossOrigin
 public class DayScheduleController {
     private DayScheduleService dayScheduleService;
 

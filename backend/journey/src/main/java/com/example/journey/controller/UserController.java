@@ -11,6 +11,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
+@CrossOrigin
 public class UserController {
     private final UserService userService;
 
