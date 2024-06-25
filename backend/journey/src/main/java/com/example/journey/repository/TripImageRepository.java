@@ -6,4 +6,5 @@ import reactor.core.publisher.Flux;
 
 public interface TripImageRepository extends ReactiveCrudRepository<TripImage, Long> {
     Flux<TripImage> findAllByIdTrip(Long idTrip);
+    Flux<TripImage> findAllByIdOwner(Long idOwner);
 }

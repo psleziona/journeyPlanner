@@ -9,5 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 public class UserTripImagesDTO {
     public String tripName;
+    public Long idTrip;
     public List<String> photos;
 }
