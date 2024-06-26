@@ -21,8 +21,8 @@ public class TripController {
     }
 
     @GetMapping
-    public Flux<Trip> getAllTrips() {
-        return tripService.findAll();
+    public Flux<Trip> getAllUserTrips() {
+        return tripService.getAllUserTrips();
     }
 
     @PostMapping

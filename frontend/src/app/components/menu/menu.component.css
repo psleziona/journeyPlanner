@@ -21,7 +21,7 @@ li {
   display: block;
 }
 
-a {
+.nav-link {
   width: 100%;
   text-decoration: none;
   color: white;

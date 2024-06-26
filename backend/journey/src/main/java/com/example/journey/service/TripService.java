@@ -4,7 +4,6 @@ import com.example.journey.auth.AuthService;
 import com.example.journey.model.*;
 import com.example.journey.repository.*;
 import lombok.AllArgsConstructor;
-import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -47,8 +46,14 @@ public class TripService {
                 );
     }
 
-    public Flux<Trip> findAll() {
-        return tripRepository.findAll();
+    public Flux<Trip> getAllUserTrips() {
+        return authService.getCurrentUser()
+                .flatMapMany(user -> {
+                    Flux<Trip> userOwnerTrips = tripRepository.findAllByIdOwner(user.getId());
+                    Flux<Trip> userTrips = userTripRepository.findAllByIdUser(user.getId())
+                            .flatMap(userTrip -> tripRepository.findById(userTrip.getIdTrip()));
+                    return Flux.merge(userOwnerTrips, userTrips);
+                });
     }
 
     public Mono<Trip> save(Trip trip) {

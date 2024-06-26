@@ -1,9 +1,17 @@
 import { Injectable } from '@angular/core';
+import {HttpClient} from "@angular/common/http";
+import {User} from "../_model/user";
+import {TripImages} from "../_model/trip-images";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
+  url = "http://localhost:8080/users/";
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
+
+  getUserPhotos() {
+    return this.http.get<TripImages[]>(this.url + "images");
+  }
 }

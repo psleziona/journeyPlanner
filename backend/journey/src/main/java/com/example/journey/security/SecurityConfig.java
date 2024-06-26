@@ -26,6 +26,7 @@ class SecurityConfig {
         return http
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/images/**").permitAll()
                         .pathMatchers(HttpMethod.POST, "/login").permitAll()
                         .pathMatchers(HttpMethod.POST, "/register").permitAll()
                         .anyExchange().authenticated()

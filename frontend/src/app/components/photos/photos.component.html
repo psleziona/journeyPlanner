@@ -1,1 +1,4 @@
-<p>photos works!</p>
+<div *ngFor="let tripImages of photos$ | async">
+  <p>{{tripImages.tripName}}</p>
+  <img *ngFor="let photo of tripImages.photos" src="http://localhost:8080/images/{{photo}}" alt="">
+</div>
