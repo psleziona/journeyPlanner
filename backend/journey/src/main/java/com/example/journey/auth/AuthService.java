@@ -60,10 +60,30 @@ public class AuthService {
                 .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED)));
     }
 
-    public Mono<User> register(User user) {
+    public Mono<LoginResponse> register(User user) {
         user.setTrips(new ArrayList<>());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setTrips(new ArrayList<>());
-        return userRepository.save(user);
+        return userRepository.save(user)
+                .map(u -> {
+                    UserDetails ud = new UserDetails() {
+                        @Override
+                        public Collection<? extends GrantedAuthority> getAuthorities() {
+                            return List.of();
+                        }
+
+                        @Override
+                        public String getPassword() {
+                            return u.getPassword();
+                        }
+
+                        @Override
+                        public String getUsername() {
+                            return u.getUsername();
+                        }
+                    };
+                    return tokenProvider.generateToken(ud);
+                })
+                .map(LoginResponse::new);
     }
 }

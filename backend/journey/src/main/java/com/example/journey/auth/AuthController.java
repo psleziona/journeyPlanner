@@ -21,7 +21,7 @@ public class AuthController {
 
     @CrossOrigin
     @PostMapping("/register")
-    Mono<User> register(@RequestBody User user) {
+    Mono<LoginResponse> register(@RequestBody User user) {
         return authService.register(user);
     }
 

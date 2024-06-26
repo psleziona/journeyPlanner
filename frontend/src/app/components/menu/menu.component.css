@@ -1,8 +1,36 @@
 .menu {
-  background-color: #4A90E2;
+  background-color: #4B3BA9;
   min-height: 100%;
+  color: white;
+}
+
+.logo {
+  width: 240px;
+  margin: 0 auto;
+  padding: 10px 0;
+  display: block;
 }
 
 ul {
   margin: 0;
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  display: block;
+}
+
+a {
+  width: 100%;
+  text-decoration: none;
+  color: white;
+  display: block;
+  padding: 20px 40px;
+
+}
+
+li:hover {
+  background-color: #604bd5;
+  cursor: pointer;
 }
