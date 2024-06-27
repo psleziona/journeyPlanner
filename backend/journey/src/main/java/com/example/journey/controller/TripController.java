@@ -20,6 +20,7 @@ public class TripController {
         return tripService.findById(id);
     }
 
+
     @GetMapping
     public Flux<Trip> getAllUserTrips() {
         return tripService.getAllUserTrips();

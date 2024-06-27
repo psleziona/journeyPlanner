@@ -34,9 +34,6 @@ public class DayScheduleService {
                 }));
     }
 
-    public Mono<DaySchedule> save(DaySchedule daySchedule) {
-        return dayScheduleRepository.save(daySchedule);
-    }
 
     public Mono<Void> deleteById(Long id) {
         return dayScheduleRepository.deleteById(id);

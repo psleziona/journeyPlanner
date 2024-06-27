@@ -1,6 +1,6 @@
 <div class="container">
   <app-menu *ngIf="storageService.isLoggedIn()"></app-menu>
-  <div class="content" [style.grid-column]="(storageService.isLoggedIn()) ? '2/3' : '1/3'">
+  <div class="content" [style.grid-column]="(storageService.isLoggedIn()) ? '2/3' : '1/3'" [style.padding]="(storageService.isLoggedIn()) ? '20px' : '0'">
     <router-outlet></router-outlet>
   </div>
 </div>

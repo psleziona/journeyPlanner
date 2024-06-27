@@ -26,11 +26,6 @@ public class DayScheduleController {
         return dayScheduleService.findByTripId(id);
     }
 
-    @PostMapping
-    public Mono<DaySchedule> createSchedule(@RequestBody DaySchedule daySchedule) {
-        return dayScheduleService.save(daySchedule);
-    }
-
     @PostMapping("/task/add")
     public Mono<DayScheduleTask> addTaskToSchedule(@RequestBody DayScheduleTask dayScheduleTask) {
         return dayScheduleService.addTaskToSchedule(dayScheduleTask);

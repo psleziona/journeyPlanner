@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+
 @Service
 @AllArgsConstructor
 public class TripService {
@@ -60,8 +62,22 @@ public class TripService {
         return authService.getCurrentUser()
                 .flatMap(user -> {
                     trip.setIdOwner(user.getId());
-                    return tripRepository.save(trip);
+                    return tripRepository.save(trip)
+                            .flatMap(this::createDayScheduleForTrip);
                 });
+    }
+
+    private Mono<Trip> createDayScheduleForTrip(Trip trip) {
+        LocalDate start = trip.getStart();
+        LocalDate finish = trip.getFinish();
+        return Flux.fromStream(start.datesUntil(finish.plusDays(1)))
+                .flatMap(date -> {
+                    DaySchedule daySchedule = new DaySchedule();
+                    daySchedule.setIdTrip(trip.getId());
+                    daySchedule.setDate(date);
+                    return dayScheduleRepository.save(daySchedule);
+                })
+                .then(Mono.just(trip));
     }
 
     public Mono<Void> addUserToTrip(Long idTrip, Long idUser) {
