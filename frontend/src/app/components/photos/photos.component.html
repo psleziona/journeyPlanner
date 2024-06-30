@@ -1,4 +1,11 @@
-<div *ngFor="let tripImages of photos$ | async">
-  <p>{{tripImages.tripName}}</p>
-  <img *ngFor="let photo of tripImages.photos" src="http://localhost:8080/images/{{photo}}" alt="">
+<ng-container *ngFor="let tripImages of photos$ | async">
+  <div *ngIf="tripImages.photos.length > 0">
+    <h2><a routerLink="/trip/{{tripImages.idTrip}}">{{tripImages.tripName}}</a></h2>
+    <div class="images">
+      <img (click)="showFullPhotoSize(true, $event)" class="image" *ngFor="let photo of tripImages.photos" src="http://localhost:8080/images/{{photo}}" alt="">
+    </div>
+  </div>
+</ng-container>
+<div class="image-modal" [style.display]="(isModalOpen ? 'block' : 'none')" [style.top]="(modalPosition)">
+  <img (click)="showFullPhotoSize(false, $event)" [src]="openImage" alt="">
 </div>

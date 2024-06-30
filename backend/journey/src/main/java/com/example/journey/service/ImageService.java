@@ -36,7 +36,7 @@ public class ImageService {
         }
     }
 
-    public Mono<String> saveImage(FilePart file, String idTrip) {
+    public Mono<Void> saveImage(FilePart file, String idTrip) {
         Long id = Long.parseLong(idTrip);
         String extension = getFileExtension(file.filename());
         String fileName = generateFileName(extension);
@@ -54,7 +54,7 @@ public class ImageService {
                                 TripImage tripImage = new TripImage(id, user.getId(), fileName);
                                 return tripImageRepository.save(tripImage);
                             })
-                            .thenReturn(fileName);
+                            .then();
                 }));
     }
 

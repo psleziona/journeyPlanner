@@ -1,0 +1,36 @@
+.images {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.image {
+  flex: 1 0 calc(20% - 10px);
+  max-width: calc(20% - 10px);
+  box-sizing: border-box;
+}
+
+.image-modal {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(81, 79, 94, 0.78);
+}
+
+.image-modal img {
+  margin: 10px auto;
+  width: 90%;
+  height: calc(100% - 20px);
+  display: block;
+}
+
+img:hover {
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: #4B3BA9;
+}

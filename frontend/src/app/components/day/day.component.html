@@ -1,0 +1,12 @@
+<div *ngIf="daySchedule$ | async as day; else loading">
+  <h2>{{day.tripName}}</h2>
+  <h3>Plany na {{day.date}}</h3>
+  <ul>
+    <li *ngFor="let task of day.tasks">{{task}}</li>
+  </ul>
+  <input [(ngModel)]="newTask" type="text">
+  <button class="add-btn" (click)="addTask()">Dodaj zadanie</button>
+</div>
+<ng-template #loading>
+  <p>Błędny adres</p>
+</ng-template>

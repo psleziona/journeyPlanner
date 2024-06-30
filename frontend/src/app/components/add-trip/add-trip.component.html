@@ -1,0 +1,15 @@
+<form [formGroup]="addTripForm">
+  <div class="form-group">
+    <label class="form-label" for="name">Nazwa</label>
+    <input class="form-control" type="text" formControlName="name" id="name">
+  </div>
+  <div class="form-group">
+    <label for="start">Data rozpoczęcia</label>
+    <input class="form-control" type="date" formControlName="start" id="start">
+  </div>
+  <div class="form-group">
+    <label for="finish">Data zakończenia</label>
+    <input class="form-control" type="date" formControlName="finish" id="finish">
+  </div>
+  <button class="add-btn" (click)="addTrip()">Dodaj</button>
+</form>

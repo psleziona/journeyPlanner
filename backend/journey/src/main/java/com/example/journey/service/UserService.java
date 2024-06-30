@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -50,6 +51,22 @@ public class UserService {
                     return Flux.merge(userOwnerTrips, userTrips);
                 })
                 .flatMap(this::mapTripToUserTripImagesDTO);
+    }
+
+    public Mono<User> getUserByUsername(String username) {
+        return userRepository.findByUsernameIs(username);
+    }
+
+    public Mono<List<String>> getRandomUserImages(int count) {
+        return authService.getCurrentUser()
+                .flatMapMany(user -> tripImageRepository.findAllByIdOwner(user.getId()))
+                .map(TripImage::getFilename)
+                .collectList()
+                .map(imageNames -> {
+                    Collections.shuffle(imageNames);
+                    return imageNames.subList(0, Math.min(count, imageNames.size()));
+                });
+
     }
 
     private Mono<UserTripImagesDTO> mapTripToUserTripImagesDTO(Trip trip) {

@@ -1,5 +1,5 @@
-<div>
-  <p>{{ trip.name }}</p>
-  <p>{{ trip.start }}</p>
-  <p>{{ trip.finish }}</p>
+<div class="trip-details">
+  <p><a class="trip-link" href="trip/{{trip.id}}">{{ trip.name }}</a></p>
+  <p>Data rozpoczęcia: {{ trip.start }}</p>
+  <p>Data zakończenia {{ trip.finish }}</p>
 </div>

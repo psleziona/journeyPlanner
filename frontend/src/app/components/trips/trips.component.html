@@ -1,3 +1,4 @@
+<button [routerLink]="['/add-trip']" class="add-btn">Dodaj</button>
 <div *ngFor="let trip of trips$ | async">
   <app-trip-details [trip]="trip"></app-trip-details>
 </div>

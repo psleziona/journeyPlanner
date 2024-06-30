@@ -29,22 +29,17 @@ export class StorageService {
     return {};
   }
 
+  public getUserId() {
+    return this.getUser()['sub'];
+  }
+
   public getExpirationDate() {
     return new Date(this.getUser()['exp'] * 1000);
   }
 
-  public getRole() {
-    return this.getUser()['role'];
-  }
-
   public isLoggedIn(): boolean {
     const user = window.sessionStorage.getItem(USER_KEY);
-    if(user)
-      return true;
-    return false;
-  }
+    return !!user;
 
-  public isAdmin() {
-    return this.getRole() == 'ADMIN';
   }
 }

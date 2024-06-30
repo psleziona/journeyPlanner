@@ -1,1 +1,33 @@
-<p>trip works!</p>
+<div *ngIf="trip$ | async as trip; else loading">
+  <h2>{{trip.name}}</h2>
+  <h3>Użytkownicy</h3>
+  <ul>
+    <li *ngFor="let user of trip.users">{{user.username}}</li>
+  </ul>
+  <div *ngIf="storageService.getUserId() == trip.idOwner">
+    <input [(ngModel)]="username" type="text">
+    <button class="add-btn" (click)="addUser()">Dodaj użytkownika</button>
+  </div>
+  <h3>Dni</h3>
+  <ul>
+    <li *ngFor="let day of trip.schedules"><a routerLink="/day/{{day.id}}">{{day.date}}</a></li>
+  </ul>
+  <h3>Komentarze</h3>
+  <ul>
+    <li *ngFor="let comment of trip.comments">{{comment}}</li>
+  </ul>
+  <input [(ngModel)]="newComment" type="text">
+  <button class="add-btn" (click)="addComment()">Dodaj komentarz</button>
+  <h3>Zdjęcia</h3>
+  <input type="file" id="filename" class="form-control" (change)="onFileSelected($event)"  accept="image/png, image/jpeg, image/jpg">
+  <button class="add-btn" (click)="addPhoto()">Dodaj zdjęcie</button>
+  <div class="images">
+    <img (click)="showFullPhotoSize(true, $event)" class="image" *ngFor="let photo of trip.images" src="http://localhost:8080/images/{{photo}}" alt="">
+  </div>
+</div>
+<div class="image-modal" [style.display]="(isModalOpen ? 'block' : 'none')" [style.top]="(modalPosition)">
+  <img (click)="showFullPhotoSize(false, $event)" [src]="openImage" alt="">
+</div>
+<ng-template #loading>
+  <p>Błędny adres</p>
+</ng-template>

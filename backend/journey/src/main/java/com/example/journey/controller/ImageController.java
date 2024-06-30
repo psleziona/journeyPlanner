@@ -20,7 +20,7 @@ public class ImageController {
 
     @PostMapping("/upload")
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<String> uploadImage(@RequestPart("file") FilePart file, @RequestPart("idTrip") String idTrip) throws IOException {
+    public Mono<Void> uploadImage(@RequestPart("file") FilePart file, @RequestPart("idTrip") String idTrip) throws IOException {
         return imageService.saveImage(file, idTrip);
     }
 

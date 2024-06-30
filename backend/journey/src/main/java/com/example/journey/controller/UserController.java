@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
@@ -18,6 +20,11 @@ public class UserController {
     @GetMapping("/{id}")
     public Mono<User> getUserById(@PathVariable Long id) {
         return userService.findById(id);
+    }
+
+    @GetMapping("/username/{username}")
+    public Mono<User> getUserByUsername(@PathVariable String username) {
+        return userService.getUserByUsername(username);
     }
 
     @GetMapping
@@ -33,5 +40,10 @@ public class UserController {
     @GetMapping("/images")
     public Flux<UserTripImagesDTO> getUserPhotos() {
         return userService.getUserPhotos();
+    }
+
+    @GetMapping("/photos/random/{count}")
+    public Mono<List<String>> getRandomUserPhotos(@PathVariable int count) {
+        return userService.getRandomUserImages(count);
     }
 }

@@ -50,4 +50,14 @@ public class TripController {
     public Mono<TripComment> addCommentToTrip(@RequestBody TripComment tripComment) {
         return tripService.addComment(tripComment);
     }
+
+    @GetMapping("/latest")
+    public Mono<Trip> getLatestTrip() {
+        return tripService.getLatestTrip();
+    }
+
+    @GetMapping("/next")
+    public Mono<Trip> getNextTrip() {
+        return tripService.getNextTrip();
+    }
 }

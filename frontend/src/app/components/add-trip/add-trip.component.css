@@ -1,17 +1,19 @@
+form {
+  width: 60%;
+  margin: 0 auto;
+}
+
 .add-btn {
   background-color: #4B3BA9;
   color: white;
   border-radius: 15px;
   border-color: #4B3BA9;
   padding: 5px 40px;
+  width: 100%;
+  margin-top: 20px;
 }
 
 .add-btn:hover {
   background-color: white;
   color: #4B3BA9;
-}
-
-.add-btn > a {
-  text-decoration: none;
-  color: inherit;
 }

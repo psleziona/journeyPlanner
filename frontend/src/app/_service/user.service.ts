@@ -14,4 +14,12 @@ export class UserService {
   getUserPhotos() {
     return this.http.get<TripImages[]>(this.url + "images");
   }
+
+  getUserByUsername(username: string) {
+    return this.http.get<User>(this.url + `username/${username}`);
+  }
+
+  getRandomImages(count:number) {
+    return this.http.get<string[]>(this.url + `photos/random/${count}`);
+  }
 }

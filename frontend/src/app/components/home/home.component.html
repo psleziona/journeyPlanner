@@ -1,3 +1,16 @@
-<p>Link do ostatniej wycieczki</p>
-<p>Link do następnej wycieczki</p>
-<p>Kilka losowych zdjęć z podpisem</p>
+<ng-container *ngIf="nextTrip$ | async as nextTrip">
+  <h3>Następna wycieczka</h3>
+  <app-trip-details [trip]="nextTrip"></app-trip-details>
+</ng-container>
+<ng-container *ngIf="latestTrip$ | async as latestTrip">
+  <h3>Ostatnia wycieczka</h3>
+  <app-trip-details [trip]="latestTrip"></app-trip-details>
+</ng-container>
+<ng-container *ngIf="randomImages$ | async as images">
+  <h3 *ngIf="images.length > 0">Losowe zdjęcia</h3>
+  <div class="images">
+    <img class="image" *ngFor="let image of images" src="http://localhost:8080/images/{{image}}" alt="">
+  </div>
+</ng-container>
+
+

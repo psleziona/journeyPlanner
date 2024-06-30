@@ -9,6 +9,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Service
 @AllArgsConstructor
@@ -40,10 +41,14 @@ public class TripService {
                                             trip.setUsers(users);
                                             return users;
                                         }),
-                                tripCommentRepository.findAllByIdTrip(id).collectList().map(tripComments -> {
-                                    trip.setComments(tripComments.stream().map(TripComment::getComment).toList());
-                                    return tripComments;
-                                })
+                                tripCommentRepository.findAllByIdTrip(id)
+                                        .flatMap(tripComment -> userRepository.findById(tripComment.getIdUser())
+                                                .map(user -> tripComment.getComment() + " - " + user.getUsername())
+                                        ).collectList()
+                                        .map(commentsWithUsername -> {
+                                            trip.setComments(commentsWithUsername);
+                                            return commentsWithUsername;
+                                        })
                         ).then(Mono.just(trip))
                 );
     }
@@ -55,7 +60,7 @@ public class TripService {
                     Flux<Trip> userTrips = userTripRepository.findAllByIdUser(user.getId())
                             .flatMap(userTrip -> tripRepository.findById(userTrip.getIdTrip()));
                     return Flux.merge(userOwnerTrips, userTrips);
-                });
+                }).sort((t1,t2) -> t1.getStart().isAfter(t2.getStart()) ? 1 : -1);
     }
 
     public Mono<Trip> save(Trip trip) {
@@ -107,5 +112,28 @@ public class TripService {
                     tripComment.setIdUser(user.getId());
                     return tripCommentRepository.save(tripComment);
                 });
+    }
+
+    public Mono<Trip> getNextTrip() {
+        return authService.getCurrentUser()
+                .flatMapMany(user -> getUserTrips(user.getId()))
+                .filter(trip -> trip.getStart().isAfter(LocalDate.now()))
+                .sort((t1, t2) -> t1.getStart().isBefore(t2.getStart()) ? -1 : 1)
+                .next();
+    }
+
+    public Mono<Trip> getLatestTrip() {
+        return authService.getCurrentUser()
+                .flatMapMany(user -> getUserTrips(user.getId()))
+                .filter(trip -> trip.getFinish().isBefore(LocalDate.now()))
+                .sort((t1, t2) -> t1.getStart().isBefore(t2.getStart()) ? -1 : 1)
+                .next();
+    }
+
+    private Flux<Trip> getUserTrips(Long idUser) {
+        Flux<Trip> userOwnerTrips = tripRepository.findAllByIdOwner(idUser);
+        Flux<Trip> userTrips = userTripRepository.findAllByIdUser(idUser)
+                .flatMap(userTrip -> tripRepository.findById(userTrip.getIdTrip()));
+        return Flux.merge(userOwnerTrips, userTrips);
     }
 }

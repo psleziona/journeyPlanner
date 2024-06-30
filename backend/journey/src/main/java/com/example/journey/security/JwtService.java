@@ -1,5 +1,6 @@
 package com.example.journey.security;
 
+import com.example.journey.auth.CustomUserDetails;
 import com.example.journey.auth.TokenProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -9,6 +10,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +21,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-@RequiredArgsConstructor
-class JwtService implements TokenProvider {
+public class JwtService {
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -28,17 +29,13 @@ class JwtService implements TokenProvider {
     @Value("${jwt.expiration}")
     private long tokenExpiration;
 
+
     String extractUsername(String jwt) {
         return extractClaim(jwt, Claims::getSubject);
     }
 
     List<String> extractRoles(String jwt) {
         return extractClaim(jwt, claims -> (List<String>) claims.get("roles"));
-    }
-
-    @Override
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(Map.of(), userDetails);
     }
 
     boolean isTokenValid(String jwt) {
@@ -49,11 +46,11 @@ class JwtService implements TokenProvider {
         return extractClaim(jwt, Claims::getExpiration).before(new Date());
     }
 
-    private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    public String generateToken(Map<String, Object> extraClaims, CustomUserDetails userDetails) {
         long currentTimeMillis = System.currentTimeMillis();
         return Jwts.builder()
                 .claims(extraClaims)
-                .subject(userDetails.getUsername())
+                .subject(userDetails.getId().toString())
                 .claim("roles", userDetails.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .map(role -> role.substring("ROLE_".length()))

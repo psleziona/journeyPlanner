@@ -1,5 +1,6 @@
 package com.example.journey.controller;
 
+import com.example.journey.dto.DayScheduleDTO;
 import com.example.journey.model.DaySchedule;
 import com.example.journey.model.DayScheduleTask;
 import com.example.journey.repository.DayScheduleRepository;
@@ -17,7 +18,7 @@ public class DayScheduleController {
     private DayScheduleService dayScheduleService;
 
     @GetMapping("/{id}")
-    public Mono<DaySchedule> getScheduleById(@PathVariable Long id) {
+    public Mono<DayScheduleDTO> getScheduleById(@PathVariable Long id) {
         return dayScheduleService.findById(id);
     }
 
